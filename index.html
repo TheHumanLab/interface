@@ -2,12 +2,12 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>INTERRUPT — The Human Stack</title>
+<title>EXECUTE — The Human Stack</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
 body {
   margin:0;
-  font-family: Inter, sans-serif;
+  font-family: Inter, system-ui, sans-serif;
   background:#0A0A0A;
   color:#EAEAEA;
   display:flex;
@@ -50,6 +50,7 @@ input {
   text-align:left;
   background:#111;
 }
+
 .small { font-size:12px; opacity:0.5; margin-top:10px; }
 </style>
 </head>
@@ -60,68 +61,99 @@ input {
 
 <!-- START -->
 <div class="screen active" id="s0">
-<h1>You’re in a loop.</h1>
-<p>This stops now.</p>
-<button onclick="next()">Interrupt</button>
+<h1>You need to act.</h1>
+<p>We start now.</p>
+<button onclick="next()">Begin</button>
 </div>
 
-<!-- LOOP -->
+<!-- FORCE ACTION -->
 <div class="screen" id="s1">
-<h1>What are you repeating?</h1>
-<input id="loop">
-<button onclick="next()">Continue</button>
+<h1>Do something now</h1>
+<p>Don’t think. Choose one.</p>
+<button onclick="forceAction('open')">Open the thing</button>
+<button onclick="forceAction('write')">Write one line</button>
+<button onclick="forceAction('start')">Start for 10 seconds</button>
 </div>
 
-<!-- STRUCTURE -->
+<!-- CONFIRM -->
 <div class="screen" id="s2">
-<h1>Where is it breaking?</h1>
-<button onclick="select('clarity')">I don’t know what to do</button>
-<button onclick="select('execution')">I know but I’m not doing it</button>
-<button onclick="select('load')">Everything feels too much</button>
+<h1>Did you start?</h1>
+<button onclick="confirmStart(true)">Yes</button>
+<button onclick="confirmStart(false)">No</button>
 </div>
 
-<!-- RULE -->
+<!-- TASK -->
 <div class="screen" id="s3">
-<h1 id="label"></h1>
-<p id="rule"></p>
+<h1>What are you trying to do?</h1>
+<input id="task">
 <button onclick="next()">Continue</button>
 </div>
 
-<!-- ACTION PATH -->
+<!-- FRICTION -->
 <div class="screen" id="s4">
-<h1>Choose one</h1>
-<button onclick="path('start')">Start</button>
-<button onclick="path('remove')">Remove</button>
-<button onclick="path('clarify')">Clarify</button>
+<h1>What’s stopping you?</h1>
+<button onclick="setFriction('unclear')">I don’t know what to do</button>
+<button onclick="setFriction('big')">It’s too big</button>
+<button onclick="setFriction('avoid')">I don’t want to do it</button>
+<button onclick="setFriction('distracted')">I’m distracted</button>
 </div>
 
-<!-- ACTION -->
+<!-- DETAIL -->
 <div class="screen" id="s5">
-<h1 id="prompt"></h1>
+<h1>Be specific</h1>
+<input id="detail">
+<button onclick="next()">Continue</button>
+</div>
+
+<!-- COLLAPSE -->
+<div class="screen" id="s6">
+<h1 id="collapsePrompt"></h1>
 <input id="action">
 <button onclick="next()">Commit</button>
 </div>
 
-<!-- PROTOCOL -->
-<div class="screen" id="s6">
-<h1>Your Protocol</h1>
-<div class="box" id="protocol"></div>
-<button onclick="saveProtocol()">Save</button>
+<!-- EXECUTE -->
+<div class="screen" id="s7">
+<h1>You are now doing:</h1>
+<h1 id="finalAction"></h1>
+<button onclick="next()">Execute</button>
+</div>
+
+<!-- PROOF -->
+<div class="screen" id="s8">
+<h1>Did you do it?</h1>
+<button onclick="proof(true)">Yes</button>
+<button onclick="proof(false)">No</button>
+</div>
+
+<!-- CHANGE -->
+<div class="screen" id="s9">
+<h1>What changed?</h1>
+<input id="change">
+<button onclick="next()">Continue</button>
+</div>
+
+<!-- OUTPUT -->
+<div class="screen" id="s10">
+<h1>Your Execution Path</h1>
+<div class="box" id="output"></div>
+<button onclick="save()">Save</button>
 <button onclick="next()">Continue</button>
 </div>
 
 <!-- HISTORY -->
-<div class="screen" id="s7">
-<h1>Your Patterns</h1>
+<div class="screen" id="s11">
+<h1>Your Execution History</h1>
 <div id="history"></div>
-<p class="small">Return when it happens again.</p>
-<button onclick="goStart()">Run Again</button>
+<p class="small">Run this again when you stall.</p>
+<button onclick="restart()">Run Again</button>
 </div>
 
 </div>
 
 <script>
-let step=0, type="", ruleText="", labelText="", actionType="";
+let step=0;
+let friction="", task="", detail="", action="", change="";
 
 function show(id){
 document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
@@ -132,87 +164,100 @@ function next(){
 step++;
 
 if(step===1) show("s1");
-if(step===2) show("s2");
+if(step===3) show("s3");
 if(step===4) show("s4");
-
-if(step===6){
-let loop=document.getElementById("loop").value;
-let action=document.getElementById("action").value;
-
-let protocol = `
-WHEN: ${loop}
-FAILURE: ${labelText}
-RULE: ${ruleText}
-ACTION: ${action}
-DATE: ${new Date().toLocaleDateString()}
-`;
-
-document.getElementById("protocol").innerText = protocol;
-show("s6");
-}
+if(step===6) show("s6");
 
 if(step===7){
-loadHistory();
+action=document.getElementById("action").value;
+document.getElementById("finalAction").innerText=action;
 show("s7");
 }
+
+if(step===9) show("s9");
+
+if(step===10){
+task=document.getElementById("task").value;
+detail=document.getElementById("detail").value;
+change=document.getElementById("change").value;
+
+let output=`
+TASK: ${task}
+
+FRICTION: ${friction}
+DETAIL: ${detail}
+
+ACTION: ${action}
+RESULT: ${change}
+`;
+
+document.getElementById("output").innerText=output;
+show("s10");
 }
 
-function select(t){
-type=t;
-
-if(t==="clarity"){
-labelText="Clarity failure";
-ruleText="Define one action.";
+if(step===11){
+loadHistory();
+show("s11");
 }
-if(t==="execution"){
-labelText="Execution failure";
-ruleText="Start immediately.";
-}
-if(t==="load"){
-labelText="Load failure";
-ruleText="Reduce to one thing.";
 }
 
-document.getElementById("label").innerText=labelText;
-document.getElementById("rule").innerText=ruleText;
+function forceAction(type){
+show("s2");
+}
 
-step=3;
+function confirmStart(v){
+if(!v){
+alert("Start first. Then continue.");
+return;
+}
+step=2;
 show("s3");
 }
 
-function path(p){
-let prompt="";
-if(p==="start") prompt="What is the smallest start?";
-if(p==="remove") prompt="What are you removing?";
-if(p==="clarify") prompt="What needs clarity?";
+function setFriction(f){
+friction=f;
 
-document.getElementById("prompt").innerText=prompt;
+let prompt="";
+if(f==="unclear") prompt="What is the first step?";
+if(f==="big") prompt="What is the smallest version?";
+if(f==="avoid") prompt="What takes under 60 seconds?";
+if(f==="distracted") prompt="What do you remove?";
+
+document.getElementById("collapsePrompt").innerText=prompt;
 
 step=5;
 show("s5");
 }
 
-function saveProtocol(){
-let existing = JSON.parse(localStorage.getItem("protocols") || "[]");
-let current = document.getElementById("protocol").innerText;
-existing.push(current);
-localStorage.setItem("protocols", JSON.stringify(existing));
+function proof(v){
+if(!v){
+alert("Do it now. Then continue.");
+return;
+}
+step=8;
+show("s9");
+}
+
+function save(){
+let existing = JSON.parse(localStorage.getItem("execute") || "[]");
+existing.push(document.getElementById("output").innerText);
+localStorage.setItem("execute", JSON.stringify(existing));
 }
 
 function loadHistory(){
-let existing = JSON.parse(localStorage.getItem("protocols") || "[]");
-let container = document.getElementById("history");
-container.innerHTML = "";
+let existing = JSON.parse(localStorage.getItem("execute") || "[]");
+let container=document.getElementById("history");
+container.innerHTML="";
 
-existing.slice().reverse().forEach(p=>{
+existing.slice().reverse().forEach(e=>{
 let div=document.createElement("div");
 div.className="box";
-div.innerText=p;
+div.innerText=e;
 container.appendChild(div);
 });
 }
 
-function goStart(){
+function restart(){
 step=0;
 show("s0");
 }
