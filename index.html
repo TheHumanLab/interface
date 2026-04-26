@@ -2,55 +2,44 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>INTERRUPT — The Human Stack</title>
+<title>INTERRUPT — Structural System</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
 body {
-  margin: 0;
-  font-family: Inter, system-ui, sans-serif;
-  background: #0A0A0A;
-  color: #EAEAEA;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
+  margin:0;
+  font-family: Inter, sans-serif;
+  background:#0A0A0A;
+  color:#EAEAEA;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
 }
-.screen {
-  display: none;
-  max-width: 480px;
-  width: 100%;
-  padding: 24px;
-  text-align: center;
-}
-.active { display: block; }
-
-h1 { font-size: 22px; margin-bottom: 10px; }
-p { opacity: 0.7; font-size: 14px; }
+.screen { display:none; max-width:480px; width:100%; padding:24px; text-align:center;}
+.active { display:block; }
+h1 { font-size:22px; margin-bottom:10px; }
+p { opacity:0.7; font-size:14px; }
 
 button {
-  width: 100%;
-  padding: 16px;
-  margin-top: 12px;
-  background: #111;
-  border: 1px solid #2A2A2A;
-  color: #EAEAEA;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: all 0.15s ease;
+  width:100%;
+  padding:16px;
+  margin-top:12px;
+  background:#111;
+  border:1px solid #2A2A2A;
+  color:#EAEAEA;
+  border-radius:6px;
+  cursor:pointer;
 }
-button:hover {
-  background: #151515;
-  transform: scale(1.02);
-}
+button:hover { background:#151515; }
 
 input {
-  width: 100%;
-  padding: 14px;
-  margin-top: 12px;
-  background: transparent;
-  border: none;
-  border-bottom: 1px solid #2A2A2A;
-  color: #EAEAEA;
+  width:100%;
+  padding:14px;
+  margin-top:12px;
+  background:transparent;
+  border:none;
+  border-bottom:1px solid #2A2A2A;
+  color:#EAEAEA;
 }
 </style>
 </head>
@@ -59,131 +48,110 @@ input {
 
 <div id="app">
 
-<!-- ENTRY -->
-<div class="screen active" id="start">
-  <h1>You’re in a loop.</h1>
-  <p>This stops now.</p>
-  <button onclick="next()">Interrupt</button>
+<div class="screen active" id="s0">
+<h1>You’re in a loop.</h1>
+<p>This stops now.</p>
+<button onclick="next()">Interrupt</button>
 </div>
 
-<!-- STEP 1 -->
 <div class="screen" id="s1">
-  <h1>Name the loop</h1>
-  <p>What are you repeating right now?</p>
-  <input id="loopInput" placeholder="Be direct (5 words max)">
-  <button onclick="next()">Continue</button>
+<h1>What are you repeating?</h1>
+<input id="loop">
+<button onclick="next()">Continue</button>
 </div>
 
-<!-- STEP 2 -->
 <div class="screen" id="s2">
-  <h1>This is the pattern</h1>
-  <p id="patternText"></p>
-  <button onclick="next()">See it clearly</button>
+<h1>This is not thinking.</h1>
+<p id="pattern"></p>
+<button onclick="next()">Continue</button>
 </div>
 
-<!-- STEP 3 -->
 <div class="screen" id="s3">
-  <h1>Choose</h1>
-  <p>You can stay in this, or break it.</p>
-  <button onclick="choose()">Break it</button>
-  <button onclick="choose()">Stay in it</button>
+<h1>Where is it breaking?</h1>
+<button onclick="select('clarity')">I don’t know what to do</button>
+<button onclick="select('execution')">I know but I’m not doing it</button>
+<button onclick="select('load')">Everything feels too much</button>
 </div>
 
-<!-- STEP 4 -->
 <div class="screen" id="s4">
-  <h1>Collapse the loop</h1>
-  <p>What is the smallest action that moves you out of it?</p>
-  <input id="actionInput" placeholder="One simple action">
-  <button onclick="next()">Commit</button>
+<h1 id="label"></h1>
+<p id="rule"></p>
+<button onclick="next()">Continue</button>
 </div>
 
-<!-- STEP 5 -->
 <div class="screen" id="s5">
-  <h1>You are now doing:</h1>
-  <h1 id="finalAction"></h1>
-  <button onclick="next()">Lock it in</button>
+<h1>Apply it now</h1>
+<p>What is the next action?</p>
+<input id="action">
+<button onclick="next()">Commit</button>
 </div>
 
-<!-- TRANSITION -->
-<div class="screen" id="transition">
-  <h1>Loop broken.</h1>
-  <p>Now we make sure it doesn’t come back.</p>
-  <button onclick="next()">Continue</button>
+<div class="screen" id="s6">
+<h1 id="finalAction"></h1>
+<button onclick="next()">Lock it in</button>
 </div>
 
-<!-- INSTRUMENT 1 -->
-<div class="screen" id="i1">
-  <h1>Pattern Lock</h1>
-  <p>When does this usually happen?</p>
-  <input id="whenInput" placeholder="Time / situation">
-  <p>What triggers it?</p>
-  <input id="triggerInput" placeholder="Trigger">
-  <button onclick="next()">Continue</button>
-</div>
-
-<!-- INSTRUMENT 2 -->
-<div class="screen" id="i2">
-  <h1>Pre-Commit</h1>
-  <p>Next time this happens, you will:</p>
-  <input id="futureAction" placeholder="Immediate action only">
-  <button onclick="next()">Lock it in</button>
-</div>
-
-<!-- FINAL -->
-<div class="screen" id="final">
-  <h1 id="finalCommit"></h1>
-  <p>You didn’t just break the loop.  
-  You now control what happens next.</p>
+<div class="screen" id="s7">
+<h1>Loop broken.</h1>
+<p>You identified the failure and corrected it.</p>
 </div>
 
 </div>
 
 <script>
-let step = 0;
+let step=0, type="";
 
 function show(id){
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
+document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+document.getElementById(id).classList.add('active');
 }
 
 function next(){
-  step++;
+step++;
 
-  if(step === 1) show("s1");
+if(step===1) show("s1");
 
-  if(step === 2){
-    const loop = document.getElementById("loopInput").value;
-    document.getElementById("patternText").innerText =
-      "You are repeating: " + (loop || "this pattern");
-    show("s2");
-  }
-
-  if(step === 3) show("s3");
-
-  if(step === 4) show("s4");
-
-  if(step === 5){
-    const action = document.getElementById("actionInput").value;
-    document.getElementById("finalAction").innerText = action || "Take action now";
-    show("s5");
-  }
-
-  if(step === 6) show("transition");
-
-  if(step === 7) show("i1");
-
-  if(step === 8) show("i2");
-
-  if(step === 9){
-    const future = document.getElementById("futureAction").value;
-    document.getElementById("finalCommit").innerText =
-      "Next time: " + (future || "Act immediately");
-    show("final");
-  }
+if(step===2){
+let v=document.getElementById("loop").value;
+document.getElementById("pattern").innerText="You are repeating: "+v;
+show("s2");
 }
 
-function choose(){
-  next();
+if(step===3) show("s3");
+
+if(step===5) show("s5");
+
+if(step===6){
+let a=document.getElementById("action").value;
+document.getElementById("finalAction").innerText=a;
+show("s6");
+}
+
+if(step===7) show("s7");
+}
+
+function select(t){
+type=t;
+let label="", rule="";
+
+if(t==="clarity"){
+label="Structural failure: Clarity";
+rule="Define one action. Ignore everything else.";
+}
+if(t==="execution"){
+label="Structural failure: Execution";
+rule="Start before you feel ready.";
+}
+if(t==="load"){
+label="Structural failure: Load";
+rule="Reduce to one thing. Control returns from there.";
+}
+
+document.getElementById("label").innerText=label;
+document.getElementById("rule").innerText=rule;
+
+step=4;
+show("s4");
 }
 </script>
 
