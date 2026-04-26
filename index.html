@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>INTERRUPT — Structural System</title>
+<title>INTERRUPT — Protocol System</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
 body {
@@ -17,6 +17,7 @@ body {
 }
 .screen { display:none; max-width:480px; width:100%; padding:24px; text-align:center;}
 .active { display:block; }
+
 h1 { font-size:22px; margin-bottom:10px; }
 p { opacity:0.7; font-size:14px; }
 
@@ -41,6 +42,16 @@ input {
   border-bottom:1px solid #2A2A2A;
   color:#EAEAEA;
 }
+
+.protocol-box {
+  text-align:left;
+  border:1px solid #2A2A2A;
+  padding:16px;
+  margin-top:16px;
+  border-radius:6px;
+  background:#111;
+  font-size:14px;
+}
 </style>
 </head>
 
@@ -48,24 +59,28 @@ input {
 
 <div id="app">
 
+<!-- ENTRY -->
 <div class="screen active" id="s0">
 <h1>You’re in a loop.</h1>
 <p>This stops now.</p>
 <button onclick="next()">Interrupt</button>
 </div>
 
+<!-- LOOP -->
 <div class="screen" id="s1">
 <h1>What are you repeating?</h1>
 <input id="loop">
 <button onclick="next()">Continue</button>
 </div>
 
+<!-- REFLECT -->
 <div class="screen" id="s2">
 <h1>This is not thinking.</h1>
 <p id="pattern"></p>
 <button onclick="next()">Continue</button>
 </div>
 
+<!-- STRUCTURE -->
 <div class="screen" id="s3">
 <h1>Where is it breaking?</h1>
 <button onclick="select('clarity')">I don’t know what to do</button>
@@ -73,33 +88,41 @@ input {
 <button onclick="select('load')">Everything feels too much</button>
 </div>
 
+<!-- RULE -->
 <div class="screen" id="s4">
 <h1 id="label"></h1>
 <p id="rule"></p>
 <button onclick="next()">Continue</button>
 </div>
 
+<!-- FORCED PATH -->
 <div class="screen" id="s5">
-<h1>Apply it now</h1>
-<p>What is the next action?</p>
+<h1>Choose one</h1>
+<button onclick="path('start')">Start something</button>
+<button onclick="path('remove')">Remove something</button>
+<button onclick="path('clarify')">Clarify something</button>
+</div>
+
+<!-- ACTION -->
+<div class="screen" id="s6">
+<h1 id="actionPrompt"></h1>
 <input id="action">
 <button onclick="next()">Commit</button>
 </div>
 
-<div class="screen" id="s6">
-<h1 id="finalAction"></h1>
-<button onclick="next()">Lock it in</button>
-</div>
-
+<!-- PROTOCOL OUTPUT -->
 <div class="screen" id="s7">
-<h1>Loop broken.</h1>
-<p>You identified the failure and corrected it.</p>
+<h1>Your Interrupt Protocol</h1>
+
+<div class="protocol-box" id="protocolBox"></div>
+
+<button onclick="copyProtocol()">Copy Protocol</button>
 </div>
 
 </div>
 
 <script>
-let step=0, type="";
+let step=0, type="", ruleText="", labelText="", actionType="";
 
 function show(id){
 document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
@@ -121,37 +144,64 @@ if(step===3) show("s3");
 
 if(step===5) show("s5");
 
-if(step===6){
-let a=document.getElementById("action").value;
-document.getElementById("finalAction").innerText=a;
-show("s6");
-}
+if(step===7){
+let loop=document.getElementById("loop").value;
+let action=document.getElementById("action").value;
 
-if(step===7) show("s7");
+let protocol = `
+When: ${loop}
+Failure: ${labelText}
+Rule: ${ruleText}
+Action: ${action}
+`;
+
+document.getElementById("protocolBox").innerText = protocol;
+
+show("s7");
+}
 }
 
 function select(t){
 type=t;
-let label="", rule="";
 
 if(t==="clarity"){
-label="Structural failure: Clarity";
-rule="Define one action. Ignore everything else.";
+labelText="Clarity failure";
+ruleText="Define one action. Ignore everything else.";
 }
 if(t==="execution"){
-label="Structural failure: Execution";
-rule="Start before you feel ready.";
+labelText="Execution failure";
+ruleText="Start before you feel ready.";
 }
 if(t==="load"){
-label="Structural failure: Load";
-rule="Reduce to one thing. Control returns from there.";
+labelText="Load failure";
+ruleText="Reduce to one thing.";
 }
 
-document.getElementById("label").innerText=label;
-document.getElementById("rule").innerText=rule;
+document.getElementById("label").innerText=labelText;
+document.getElementById("rule").innerText=ruleText;
 
 step=4;
 show("s4");
+}
+
+function path(p){
+actionType=p;
+
+let prompt="";
+if(p==="start") prompt="What is the smallest start?";
+if(p==="remove") prompt="What are you removing?";
+if(p==="clarify") prompt="What needs clarity?";
+
+document.getElementById("actionPrompt").innerText=prompt;
+
+step=6;
+show("s6");
+}
+
+function copyProtocol(){
+let text=document.getElementById("protocolBox").innerText;
+navigator.clipboard.writeText(text);
+alert("Copied");
 }
 </script>
 
