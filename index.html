@@ -1,138 +1,144 @@
 <!DOCTYPE html>
-<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>The Human Stack</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
-body {
-  margin: 0;
-  font-family: Inter, sans-serif;
-  background: #0A0A0A;
-  color: #EAEAEA;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-}
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-.screen {
-  display: none;
-  width: 100%;
-  max-width: 480px;
-  text-align: center;
-  padding: 20px;
-}
+  :root {
+    --bg: #0A0A0A;
+    --surface: #111111;
+    --surface-hover: #151515;
+    --border: #2A2A2A;
+    --text: #EAEAEA;
+    --text-muted: #3D3D3D;
+    --text-dim: #555555;
+    --font: 'Inter', system-ui, -apple-system, sans-serif;
+  }
 
-.active {
-  display: block;
-}
+  html, body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font);
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
 
-h1 {
-  font-size: 22px;
-  margin-bottom: 10px;
-}
+  body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 48px 24px;
+    min-height: 100vh;
+  }
 
-p {
-  opacity: 0.6;
-  font-size: 14px;
-}
+  .screen {
+    display: none;
+    opacity: 0;
+    width: 100%;
+    max-width: 480px;
+    flex-direction: column;
+    transition: opacity 0.2s ease;
+    pointer-events: none;
+  }
 
-.small {
-  font-size: 12px;
-  opacity: 0.4;
-  margin-top: 8px;
-}
+  .screen.active { display: flex; pointer-events: auto; }
+  .screen.visible { opacity: 1; }
 
-button {
-  width: 100%;
-  padding: 16px;
-  margin-top: 12px;
-  background: #111;
-  border: 1px solid #2A2A2A;
-  color: #EAEAEA;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: all 0.18s ease;
-}
+  .sys-label {
+    font-size: 9px;
+    letter-spacing: 0.22em;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    font-weight: 500;
+    margin-bottom: 24px;
+  }
 
-button:hover {
-  background: #151515;
-  transform: scale(1.02);
-}
+  .screen-title {
+    font-size: 22px;
+    font-weight: 500;
+    color: var(--text);
+    letter-spacing: -0.025em;
+    line-height: 1.2;
+    margin-bottom: 10px;
+  }
 
-input {
-  width: 100%;
-  padding: 14px;
-  margin-top: 12px;
-  background: transparent;
-  border: none;
-  border-bottom: 1px solid #2A2A2A;
-  color: #EAEAEA;
-  outline: none;
-}
-</style>
-</head>
+  .screen-sub {
+    font-size: 13px;
+    color: var(--text-dim);
+    font-weight: 400;
+    line-height: 1.6;
+    margin-bottom: 4px;
+  }
 
-<body>
+  .screen-directive {
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    font-weight: 500;
+  }
 
-<div id="enter" class="screen active">
-  <h1>THE HUMAN STACK</h1>
-  <p>System access</p>
-  <button onclick="go('state')">Enter</button>
-</div>
+  .divider {
+    width: 100%;
+    height: 1px;
+    background: #1A1A1A;
+    margin: 28px 0;
+  }
 
-<div id="state" class="screen">
-  <h1>Where are you right now?</h1>
-  <p>Choose the one that feels uncomfortably accurate.</p>
-  <div class="small">Select one.</div>
+  .btn-stack { display: flex; flex-direction: column; gap: 6px; }
 
-  <button onclick="go('interrupt')">INTERRUPT</button>
-  <button>STABILISE</button>
-  <button>DECIDE</button>
-  <button>FOCUS</button>
-  <button>EXECUTE</button>
-  <button>RECLAIM</button>
-</div>
+  .btn {
+    width: 100%;
+    padding: 16px 20px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text);
+    font-family: var(--font);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: background 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
+    outline: none;
+    text-align: left;
+  }
 
-<div id="interrupt" class="screen">
-  <h1>You’re in a loop.</h1>
-  <p>Let’s interrupt it.</p>
-  <button onclick="go('step1')">Run tool</button>
-</div>
+  .btn:hover { background: var(--surface-hover); border-color: #363636; transform: scale(1.02); }
+  .btn:active { transform: scale(0.99); }
 
-<div id="step1" class="screen">
-  <h1>Single decision</h1>
-  <p>What is the one decision in front of you?</p>
-  <input placeholder="5 words or less">
-  <button onclick="go('step2')">Continue</button>
-</div>
+  .btn .arrow {
+    font-size: 14px;
+    color: var(--text-muted);
+    opacity: 0;
+    transform: translateX(-4px);
+    transition: opacity 0.15s ease, transform 0.15s ease;
+    line-height: 1;
+  }
 
-<div id="step2" class="screen">
-  <h1>Choose one</h1>
-  <button onclick="go('confirm')">Act</button>
-  <button onclick="go('confirm')">Delay</button>
-</div>
+  .btn:hover .arrow { opacity: 1; transform: translateX(0); }
 
-<div id="confirm" class="screen">
-  <h1>Notice the shift</h1>
-  <p>You’ve moved from noise to decision.</p>
-  <button onclick="go('state')">Continue</button>
-</div>
+  .btn-index {
+    font-size: 10px;
+    color: #2D2D2D;
+    font-weight: 400;
+    margin-right: 14px;
+    font-variant-numeric: tabular-nums;
+    transition: color 0.15s ease;
+  }
 
-<script>
-function go(screen) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.getElementById(screen).classList.add('active');
-}
-</script>
-
-</body>
-</html>
-
+  .btn:hover .btn-index { color: #484848; }
   .btn-inner { display: flex; align-items: center; }
 
-  /* Primary CTA */
   .btn-primary {
     width: 100%;
     padding: 16px 20px;
@@ -152,18 +158,11 @@ function go(screen) {
     gap: 10px;
     transition: background 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
     outline: none;
-    text-align: center;
   }
 
-  .btn-primary:hover {
-    background: var(--surface-hover);
-    border-color: #363636;
-    transform: scale(1.01);
-  }
-
+  .btn-primary:hover { background: var(--surface-hover); border-color: #363636; transform: scale(1.01); }
   .btn-primary:active { transform: scale(0.99); }
 
-  /* Ghost/secondary button */
   .btn-ghost {
     width: 100%;
     padding: 14px 20px;
@@ -182,18 +181,30 @@ function go(screen) {
     text-align: center;
   }
 
-  .btn-ghost:hover {
+  .btn-ghost:hover { color: var(--text); border-color: var(--border); }
+
+  .btn-choice {
+    width: 100%;
+    padding: 20px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
     color: var(--text);
-    border-color: var(--border);
+    font-family: var(--font);
+    font-size: 13px;
+    font-weight: 400;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
+    outline: none;
+    text-align: center;
   }
 
-  /* Input */
-  .input-wrap {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    margin-bottom: 6px;
-  }
+  .btn-choice:hover { background: var(--surface-hover); border-color: #363636; transform: scale(1.02); }
+  .btn-choice:active { transform: scale(0.99); }
+
+  .input-wrap { display: flex; flex-direction: column; gap: 10px; margin-bottom: 6px; }
 
   .input-label {
     font-size: 9px;
@@ -229,7 +240,6 @@ function go(screen) {
     font-weight: 400;
   }
 
-  /* Response panel */
   .panel {
     background: #0E0E0E;
     border: 1px solid #1C1C1C;
@@ -247,14 +257,8 @@ function go(screen) {
     margin-bottom: 8px;
   }
 
-  .panel-text {
-    font-size: 13px;
-    color: #666666;
-    line-height: 1.65;
-    font-weight: 400;
-  }
+  .panel-text { font-size: 13px; color: #666666; line-height: 1.65; font-weight: 400; }
 
-  /* Enter screen: large title treatment */
   #screen-enter .screen-title {
     font-size: 28px;
     font-weight: 600;
@@ -263,7 +267,6 @@ function go(screen) {
     margin-bottom: 8px;
   }
 
-  /* Shift confirmation highlight */
   .highlight-text {
     font-size: 20px;
     font-weight: 500;
@@ -273,7 +276,6 @@ function go(screen) {
     margin-bottom: 10px;
   }
 
-  /* Footer nav */
   .screen-footer {
     margin-top: 36px;
     display: flex;
@@ -304,33 +306,6 @@ function go(screen) {
   }
 
   .back-btn:hover { color: #4A4A4A; }
-
-  /* Choice buttons (Act / Delay) */
-  .btn-choice {
-    width: 100%;
-    padding: 20px;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    color: var(--text);
-    font-family: var(--font);
-    font-size: 13px;
-    font-weight: 400;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    cursor: pointer;
-    transition: background 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
-    outline: none;
-    text-align: center;
-  }
-
-  .btn-choice:hover {
-    background: var(--surface-hover);
-    border-color: #363636;
-    transform: scale(1.02);
-  }
-
-  .btn-choice:active { transform: scale(0.99); }
 </style>
 </head>
 <body>
@@ -363,23 +338,23 @@ function go(screen) {
       <div class="btn-inner"><span class="btn-index">01</span><span>Interrupt</span></div>
       <span class="arrow">›</span>
     </button>
-    <button class="btn" onclick="go('screen-generic', {state:'Stabilise',text:'You\'re holding something together that shouldn\'t need this much effort. The first step is acknowledging the cost.'})">
+    <button class="btn" onclick="go('screen-generic',{state:'Stabilise',text:'You\'re holding something together that shouldn\'t need this much effort. The first step is acknowledging the cost.'})">
       <div class="btn-inner"><span class="btn-index">02</span><span>Stabilise</span></div>
       <span class="arrow">›</span>
     </button>
-    <button class="btn" onclick="go('screen-generic', {state:'Decide',text:'The information is sufficient. The delay is psychological. You already know the direction. What remains is the commit.'})">
+    <button class="btn" onclick="go('screen-generic',{state:'Decide',text:'The information is sufficient. The delay is psychological. You already know the direction. What remains is the commit.'})">
       <div class="btn-inner"><span class="btn-index">03</span><span>Decide</span></div>
       <span class="arrow">›</span>
     </button>
-    <button class="btn" onclick="go('screen-generic', {state:'Focus',text:'You have the objective. The resistance is internal. The work is already defined. Protect this state and begin.'})">
+    <button class="btn" onclick="go('screen-generic',{state:'Focus',text:'You have the objective. The resistance is internal. The work is already defined. Protect this state and begin.'})">
       <div class="btn-inner"><span class="btn-index">04</span><span>Focus</span></div>
       <span class="arrow">›</span>
     </button>
-    <button class="btn" onclick="go('screen-generic', {state:'Execute',text:'The thinking is done. Protect this state. Reject inputs that are not load-bearing. Finish before you evaluate.'})">
+    <button class="btn" onclick="go('screen-generic',{state:'Execute',text:'The thinking is done. Protect this state. Reject inputs that are not load-bearing. Finish before you evaluate.'})">
       <div class="btn-inner"><span class="btn-index">05</span><span>Execute</span></div>
       <span class="arrow">›</span>
     </button>
-    <button class="btn" onclick="go('screen-generic', {state:'Reclaim',text:'Something was taken — time, attention, momentum — and you have not acted to recover it. Reclamation is deliberate.'})">
+    <button class="btn" onclick="go('screen-generic',{state:'Reclaim',text:'Something was taken — time, attention, momentum — and you have not acted to recover it. Reclamation is deliberate.'})">
       <div class="btn-inner"><span class="btn-index">06</span><span>Reclaim</span></div>
       <span class="arrow">›</span>
     </button>
@@ -418,15 +393,7 @@ function go(screen) {
   <div class="divider"></div>
   <div class="input-wrap">
     <label class="input-label" for="decision-input">Your answer</label>
-    <input
-      class="field"
-      id="decision-input"
-      type="text"
-      placeholder="e.g. send the email"
-      maxlength="40"
-      autocomplete="off"
-      spellcheck="false"
-    />
+    <input class="field" id="decision-input" type="text" placeholder="e.g. send the email" maxlength="40" autocomplete="off" spellcheck="false" />
     <span class="constraint">Answer in 5 words or less.</span>
   </div>
   <div style="height:20px;"></div>
@@ -479,7 +446,7 @@ function go(screen) {
   </div>
 </div>
 
-<!-- SCREEN 7: GENERIC STATE (Stabilise / Decide / Focus / Execute / Reclaim) -->
+<!-- SCREEN 7: GENERIC STATE -->
 <div class="screen" id="screen-generic">
   <p class="sys-label" id="generic-label">The Human Stack / State</p>
   <h2 class="screen-title" id="generic-title">State</h2>
@@ -510,14 +477,11 @@ function go(screen) {
       document.getElementById('generic-title').textContent = data.state + '.';
       document.getElementById('generic-text').textContent = data.text;
     }
-
     if (id === 'screen-tool1') {
       document.getElementById('decision-input').value = '';
     }
-
     const next = document.getElementById(id);
     if (!next) return;
-
     if (current) {
       current.classList.remove('visible');
       setTimeout(() => {
@@ -542,13 +506,8 @@ function go(screen) {
 
   function validateAndContinue() {
     const val = document.getElementById('decision-input').value.trim();
-    if (!val) {
-      document.getElementById('decision-input').style.borderColor = '#3A3A3A';
-      document.getElementById('decision-input').focus();
-      return;
-    }
-    const recap = document.getElementById('tool2-recap');
-    recap.textContent = '"' + val + '"';
+    if (!val) { document.getElementById('decision-input').focus(); return; }
+    document.getElementById('tool2-recap').textContent = '"' + val + '"';
     go('screen-tool2');
   }
 
