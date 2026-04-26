@@ -1,0 +1,313 @@
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
+  .hs-root {
+    background: #0A0A0A;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    padding: 48px 24px;
+    box-sizing: border-box;
+  }
+  .hs-container {
+    width: 100%;
+    max-width: 480px;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+  .hs-header {
+    margin-bottom: 32px;
+  }
+  .hs-label {
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    color: #3A3A3A;
+    text-transform: uppercase;
+    font-weight: 500;
+    margin-bottom: 20px;
+  }
+  .hs-question {
+    font-size: 22px;
+    font-weight: 500;
+    color: #EAEAEA;
+    letter-spacing: -0.02em;
+    line-height: 1.25;
+    margin: 0 0 10px 0;
+  }
+  .hs-subtext {
+    font-size: 13px;
+    color: #3D3D3D;
+    font-weight: 400;
+    line-height: 1.5;
+    margin: 0;
+    letter-spacing: 0.01em;
+  }
+  .hs-divider {
+    width: 100%;
+    height: 1px;
+    background: #1A1A1A;
+    margin: 28px 0;
+  }
+  .hs-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .hs-btn {
+    width: 100%;
+    padding: 16px 20px;
+    background: #111111;
+    border: 1px solid #2A2A2A;
+    color: #EAEAEA;
+    font-family: 'Inter', system-ui, sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    text-align: left;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: background 0.12s ease, border-color 0.12s ease;
+    box-sizing: border-box;
+    border-radius: 0;
+    outline: none;
+    position: relative;
+  }
+  .hs-btn:hover {
+    background: #151515;
+    border-color: #363636;
+  }
+  .hs-btn:hover .hs-btn-arrow {
+    opacity: 1;
+    transform: translateX(0px);
+  }
+  .hs-btn.active {
+    background: #151515;
+    border-color: #4A4A4A;
+    color: #FFFFFF;
+  }
+  .hs-btn.active .hs-btn-state {
+    opacity: 1;
+  }
+  .hs-btn-arrow {
+    font-size: 14px;
+    color: #3A3A3A;
+    opacity: 0;
+    transform: translateX(-4px);
+    transition: opacity 0.12s ease, transform 0.12s ease;
+    line-height: 1;
+  }
+  .hs-btn-state {
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    color: #4A4A4A;
+    opacity: 0;
+    transition: opacity 0.15s ease;
+    font-weight: 400;
+  }
+  .hs-btn-inner {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .hs-btn-index {
+    font-size: 10px;
+    color: #2D2D2D;
+    font-weight: 400;
+    font-variant-numeric: tabular-nums;
+    width: 14px;
+    transition: color 0.12s ease;
+  }
+  .hs-btn:hover .hs-btn-index,
+  .hs-btn.active .hs-btn-index {
+    color: #4A4A4A;
+  }
+  .hs-response {
+    margin-top: 28px;
+    padding: 18px 20px;
+    background: #0F0F0F;
+    border: 1px solid #1E1E1E;
+    border-left: 2px solid #2E2E2E;
+    opacity: 0;
+    transform: translateY(6px);
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    display: none;
+  }
+  .hs-response.visible {
+    display: block;
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .hs-response-label {
+    font-size: 9px;
+    letter-spacing: 0.16em;
+    color: #333333;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    font-weight: 500;
+  }
+  .hs-response-text {
+    font-size: 13px;
+    color: #5A5A5A;
+    line-height: 1.65;
+    margin: 0;
+    font-weight: 400;
+  }
+  .hs-footer {
+    margin-top: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .hs-footer-label {
+    font-size: 9px;
+    letter-spacing: 0.14em;
+    color: #222222;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+  .hs-reset {
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    color: #2A2A2A;
+    text-transform: uppercase;
+    font-weight: 500;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    font-family: inherit;
+    transition: color 0.12s;
+  }
+  .hs-reset:hover {
+    color: #4A4A4A;
+  }
+  .hs-reset.active {
+    color: #3A3A3A;
+  }
+</style>
+
+<div class="hs-root">
+  <div class="hs-container">
+    <div class="hs-header">
+      <p class="hs-label">The Human Stack / v1.0</p>
+      <h1 class="hs-question">Where are you right now?</h1>
+      <p class="hs-subtext">Choose the one that feels uncomfortably accurate.</p>
+    </div>
+
+    <div class="hs-divider"></div>
+
+    <div class="hs-buttons" id="btnGroup">
+      <button class="hs-btn" data-id="0" onclick="selectState(this)">
+        <div class="hs-btn-inner">
+          <span class="hs-btn-index">01</span>
+          <span>Interrupt</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:16px;">
+          <span class="hs-btn-state">Selected</span>
+          <span class="hs-btn-arrow">›</span>
+        </div>
+      </button>
+      <button class="hs-btn" data-id="1" onclick="selectState(this)">
+        <div class="hs-btn-inner">
+          <span class="hs-btn-index">02</span>
+          <span>Stabilise</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:16px;">
+          <span class="hs-btn-state">Selected</span>
+          <span class="hs-btn-arrow">›</span>
+        </div>
+      </button>
+      <button class="hs-btn" data-id="2" onclick="selectState(this)">
+        <div class="hs-btn-inner">
+          <span class="hs-btn-index">03</span>
+          <span>Decide</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:16px;">
+          <span class="hs-btn-state">Selected</span>
+          <span class="hs-btn-arrow">›</span>
+        </div>
+      </button>
+      <button class="hs-btn" data-id="3" onclick="selectState(this)">
+        <div class="hs-btn-inner">
+          <span class="hs-btn-index">04</span>
+          <span>Focus</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:16px;">
+          <span class="hs-btn-state">Selected</span>
+          <span class="hs-btn-arrow">›</span>
+        </div>
+      </button>
+      <button class="hs-btn" data-id="4" onclick="selectState(this)">
+        <div class="hs-btn-inner">
+          <span class="hs-btn-index">05</span>
+          <span>Execute</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:16px;">
+          <span class="hs-btn-state">Selected</span>
+          <span class="hs-btn-arrow">›</span>
+        </div>
+      </button>
+      <button class="hs-btn" data-id="5" onclick="selectState(this)">
+        <div class="hs-btn-inner">
+          <span class="hs-btn-index">06</span>
+          <span>Reclaim</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:16px;">
+          <span class="hs-btn-state">Selected</span>
+          <span class="hs-btn-arrow">›</span>
+        </div>
+      </button>
+    </div>
+
+    <div class="hs-response" id="responseBox">
+      <p class="hs-response-label">System read</p>
+      <p class="hs-response-text" id="responseText"></p>
+    </div>
+
+    <div class="hs-footer">
+      <span class="hs-footer-label">Cognitive layer active</span>
+      <button class="hs-reset" id="resetBtn" onclick="resetState()">Clear</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const responses = [
+  "You are mid-process, pulled away. The thread is broken but not gone. The priority now is not speed — it is re-entry without compounding the disruption.",
+  "Something has destabilised. You are not in crisis, but you are not grounded either. The task is containment before expansion. Narrow the surface area. Hold the edge.",
+  "The information is sufficient. The delay is not analytical — it is psychological. You already know the direction. What remains is the commit.",
+  "You have the objective. The resistance is internal: competing inputs, low signal-to-noise, premature context-switching. The work is already defined. Begin.",
+  "You are in execution mode. The thinking is done. Protect this state. Reject inputs that are not directly load-bearing. Finish before evaluating.",
+  "Something was taken from you — time, attention, energy, momentum — and you have not yet acted to recover it. Reclamation is not passive. It is a deliberate reallocation."
+];
+
+let selected = null;
+
+function selectState(btn) {
+  const btns = document.querySelectorAll('.hs-btn');
+  btns.forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  selected = btn.dataset.id;
+  const box = document.getElementById('responseBox');
+  const text = document.getElementById('responseText');
+  text.textContent = responses[selected];
+  box.style.display = 'block';
+  requestAnimationFrame(() => { box.classList.add('visible'); });
+  document.getElementById('resetBtn').classList.add('active');
+}
+
+function resetState() {
+  const btns = document.querySelectorAll('.hs-btn');
+  btns.forEach(b => b.classList.remove('active'));
+  selected = null;
+  const box = document.getElementById('responseBox');
+  box.classList.remove('visible');
+  setTimeout(() => { box.style.display = 'none'; }, 200);
+  document.getElementById('resetBtn').classList.remove('active');
+}
+</script>
