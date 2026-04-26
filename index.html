@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>The Human Stack</title>
+<title>INTERRUPT — The Human Stack</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
 body {
@@ -15,27 +15,16 @@ body {
   align-items: center;
   height: 100vh;
 }
-
 .screen {
   display: none;
-  width: 100%;
   max-width: 480px;
+  width: 100%;
   padding: 24px;
   text-align: center;
-  opacity: 0;
-  transition: opacity 0.2s ease;
 }
-
-.active {
-  display: block;
-  opacity: 1;
-}
-
+.active { display: block; }
 h1 { font-size: 22px; margin-bottom: 10px; }
-p { opacity: 0.6; font-size: 14px; }
-
-.small { font-size: 12px; opacity: 0.4; margin-top: 6px; }
-
+p { opacity: 0.7; font-size: 14px; }
 button {
   width: 100%;
   padding: 16px;
@@ -45,14 +34,10 @@ button {
   color: #EAEAEA;
   border-radius: 6px;
   cursor: pointer;
-  transition: all 0.18s ease;
 }
-
 button:hover {
   background: #151515;
-  transform: scale(1.02);
 }
-
 input {
   width: 100%;
   padding: 14px;
@@ -61,201 +46,99 @@ input {
   border: none;
   border-bottom: 1px solid #2A2A2A;
   color: #EAEAEA;
-  outline: none;
 }
 </style>
 </head>
 
 <body>
 
-<!-- ENTER -->
-<div id="enter" class="screen active">
-  <h1>THE HUMAN STACK</h1>
-  <p>System access</p>
-  <button onclick="go('state')">Enter</button>
+<div id="app">
+
+<!-- ENTRY -->
+<div class="screen active" id="start">
+  <h1>You’re in a loop.</h1>
+  <p>This stops now.</p>
+  <button onclick="next()">Interrupt</button>
 </div>
 
-<!-- STATE -->
-<div id="state" class="screen">
-  <h1>What’s happening right now?</h1>
-  <p>Choose the one that feels uncomfortably accurate.</p>
-  <div class="small">Select one.</div>
-
-  <button onclick="start('interrupt')">INTERRUPT</button>
-  <button onclick="start('stabilise')">STABILISE</button>
-  <button onclick="start('decide')">DECIDE</button>
-  <button onclick="start('focus')">FOCUS</button>
-  <button onclick="start('execute')">EXECUTE</button>
-  <button onclick="start('reclaim')">RECLAIM</button>
+<!-- STEP 1 -->
+<div class="screen" id="s1">
+  <h1>Name the loop</h1>
+  <p>What are you repeating right now?</p>
+  <input id="loopInput" placeholder="Be direct (5 words max)">
+  <button onclick="next()">Continue</button>
 </div>
 
-<!-- FLOW -->
-<div id="flow" class="screen">
-  <h1 id="title"></h1>
-  <p id="sub"></p>
-  <div id="content"></div>
+<!-- STEP 2 -->
+<div class="screen" id="s2">
+  <h1>This is the pattern</h1>
+  <p id="patternText"></p>
+  <button onclick="next()">See it clearly</button>
 </div>
 
-<!-- CONFIRM -->
-<div id="confirm" class="screen">
-  <h1>Notice the shift</h1>
-  <p id="confirmText"></p>
-  <button onclick="afterFlow()">Continue</button>
+<!-- STEP 3 -->
+<div class="screen" id="s3">
+  <h1>Choose</h1>
+  <p>You can stay in this, or break it.</p>
+  <button onclick="choose('stay')">Stay in it</button>
+  <button onclick="choose('break')">Break it</button>
 </div>
 
-<!-- UPGRADE -->
-<div id="upgrade" class="screen">
-  <h1>You’ve used the surface layer</h1>
-  <p>The full system maps and removes your patterns.</p>
-  <button>Unlock Full System</button>
-  <button onclick="go('state')">Continue</button>
+<!-- STEP 4 -->
+<div class="screen" id="s4">
+  <h1>Collapse the loop</h1>
+  <p>What is the smallest action that moves you out of it?</p>
+  <input id="actionInput" placeholder="One simple action">
+  <button onclick="next()">Commit</button>
+</div>
+
+<!-- STEP 5 -->
+<div class="screen" id="s5">
+  <h1>Say it clearly</h1>
+  <p>You are now doing:</p>
+  <h1 id="finalAction"></h1>
+  <button onclick="next()">Lock it in</button>
+</div>
+
+<!-- FINAL -->
+<div class="screen" id="final">
+  <h1>Loop broken.</h1>
+  <p>You now have control. Act immediately.</p>
+</div>
+
 </div>
 
 <script>
-let flowCount = 0;
-let current = "";
 let step = 0;
 
-function go(id){
+function show(id){
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  setTimeout(() => {
-    document.getElementById(id).classList.add('active');
-  }, 50);
-}
-
-function start(state){
-  current = state;
-  step = 0;
-  localStorage.setItem("lastState", state);
-  runFlow();
-}
-
-function runFlow(){
-  let title="", sub="", content="";
-
-  if(current==="interrupt"){
-    if(step===0){
-      title="You’re looping.";
-      sub="This isn’t thinking.";
-      content=`<button onclick="next()">Interrupt</button>`;
-    }
-    if(step===1){
-      title="What are you repeating?";
-      sub="";
-      content=`<input placeholder="5 words max"><button onclick="next()">Continue</button>`;
-    }
-    if(step===2){
-      title="Choose";
-      content=`<button onclick="finish('You broke the loop.')">Break it</button>
-               <button onclick="finish('You stayed in it.')">Continue</button>`;
-    }
-  }
-
-  if(current==="stabilise"){
-    if(step===0){
-      title="You’re overloaded.";
-      content=`<button onclick="next()">Stabilise</button>`;
-    }
-    if(step===1){
-      title="Name 3 real things";
-      content=`<input><input><input><button onclick="next()">Continue</button>`;
-    }
-    if(step===2){
-      title="What can you control?";
-      content=`<input><button onclick="finish('You’re back in control.')">Act</button>`;
-    }
-  }
-
-  if(current==="decide"){
-    if(step===0){
-      title="You already know.";
-      content=`<button onclick="next()">Decide</button>`;
-    }
-    if(step===1){
-      title="What are you avoiding?";
-      content=`<input><button onclick="next()">Continue</button>`;
-    }
-    if(step===2){
-      content=`<button onclick="finish('You decided.')">Decide now</button>
-               <button onclick="finish('You delayed.')">Delay</button>`;
-    }
-  }
-
-  if(current==="focus"){
-    if(step===0){
-      title="You’re scattered.";
-      content=`<button onclick="next()">Focus</button>`;
-    }
-    if(step===1){
-      title="One task";
-      content=`<input><button onclick="finish('Attention locked.')">Lock In</button>`;
-    }
-  }
-
-  if(current==="execute"){
-    if(step===0){
-      title="You’re delaying.";
-      content=`<button onclick="next()">Execute</button>`;
-    }
-    if(step===1){
-      title="What are you avoiding?";
-      content=`<input><button onclick="next()">Continue</button>`;
-    }
-    if(step===2){
-      title="Smallest action";
-      content=`<input><button onclick="finish('You moved.')">Execute</button>`;
-    }
-  }
-
-  if(current==="reclaim"){
-    if(step===0){
-      title="You’ve drifted.";
-      content=`<button onclick="next()">Reclaim</button>`;
-    }
-    if(step===1){
-      content=`<button onclick="next()">Move</button>
-               <button onclick="next()">Reset</button>
-               <button onclick="next()">Breathe</button>`;
-    }
-    if(step===2){
-      title="What changed?";
-      content=`<input><button onclick="finish('You’re back.')">Continue</button>`;
-    }
-  }
-
-  document.getElementById("title").innerText = title;
-  document.getElementById("sub").innerText = sub;
-  document.getElementById("content").innerHTML = content;
-
-  go("flow");
+  document.getElementById(id).classList.add('active');
 }
 
 function next(){
   step++;
-  runFlow();
-}
 
-function finish(text){
-  document.getElementById("confirmText").innerText = text;
-  go("confirm");
-}
-
-function afterFlow(){
-  flowCount++;
-  if(flowCount>=2){
-    flowCount=0;
-    go("upgrade");
-  } else {
-    go("state");
+  if(step === 1) show("s1");
+  if(step === 2){
+    const loop = document.getElementById("loopInput").value;
+    document.getElementById("patternText").innerText =
+      "You are stuck repeating: " + (loop || "this pattern");
+    show("s2");
   }
+  if(step === 3) show("s3");
+  if(step === 4) show("s4");
+  if(step === 5){
+    const action = document.getElementById("actionInput").value;
+    document.getElementById("finalAction").innerText = action || "Take action now";
+    show("s5");
+  }
+  if(step === 6) show("final");
 }
 
-window.onload = () => {
-  const last = localStorage.getItem("lastState");
-  if(last){
-    start(last);
-  }
-};
+function choose(type){
+  next();
+}
 </script>
 
 </body>
