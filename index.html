@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>INTERRUPT — Protocol System</title>
+<title>INTERRUPT — The Human Stack</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
 body {
@@ -43,15 +43,14 @@ input {
   color:#EAEAEA;
 }
 
-.protocol-box {
-  text-align:left;
+.box {
   border:1px solid #2A2A2A;
   padding:16px;
   margin-top:16px;
-  border-radius:6px;
+  text-align:left;
   background:#111;
-  font-size:14px;
 }
+.small { font-size:12px; opacity:0.5; margin-top:10px; }
 </style>
 </head>
 
@@ -59,7 +58,7 @@ input {
 
 <div id="app">
 
-<!-- ENTRY -->
+<!-- START -->
 <div class="screen active" id="s0">
 <h1>You’re in a loop.</h1>
 <p>This stops now.</p>
@@ -73,15 +72,8 @@ input {
 <button onclick="next()">Continue</button>
 </div>
 
-<!-- REFLECT -->
-<div class="screen" id="s2">
-<h1>This is not thinking.</h1>
-<p id="pattern"></p>
-<button onclick="next()">Continue</button>
-</div>
-
 <!-- STRUCTURE -->
-<div class="screen" id="s3">
+<div class="screen" id="s2">
 <h1>Where is it breaking?</h1>
 <button onclick="select('clarity')">I don’t know what to do</button>
 <button onclick="select('execution')">I know but I’m not doing it</button>
@@ -89,34 +81,41 @@ input {
 </div>
 
 <!-- RULE -->
-<div class="screen" id="s4">
+<div class="screen" id="s3">
 <h1 id="label"></h1>
 <p id="rule"></p>
 <button onclick="next()">Continue</button>
 </div>
 
-<!-- FORCED PATH -->
-<div class="screen" id="s5">
+<!-- ACTION PATH -->
+<div class="screen" id="s4">
 <h1>Choose one</h1>
-<button onclick="path('start')">Start something</button>
-<button onclick="path('remove')">Remove something</button>
-<button onclick="path('clarify')">Clarify something</button>
+<button onclick="path('start')">Start</button>
+<button onclick="path('remove')">Remove</button>
+<button onclick="path('clarify')">Clarify</button>
 </div>
 
 <!-- ACTION -->
-<div class="screen" id="s6">
-<h1 id="actionPrompt"></h1>
+<div class="screen" id="s5">
+<h1 id="prompt"></h1>
 <input id="action">
 <button onclick="next()">Commit</button>
 </div>
 
-<!-- PROTOCOL OUTPUT -->
+<!-- PROTOCOL -->
+<div class="screen" id="s6">
+<h1>Your Protocol</h1>
+<div class="box" id="protocol"></div>
+<button onclick="saveProtocol()">Save</button>
+<button onclick="next()">Continue</button>
+</div>
+
+<!-- HISTORY -->
 <div class="screen" id="s7">
-<h1>Your Interrupt Protocol</h1>
-
-<div class="protocol-box" id="protocolBox"></div>
-
-<button onclick="copyProtocol()">Copy Protocol</button>
+<h1>Your Patterns</h1>
+<div id="history"></div>
+<p class="small">Return when it happens again.</p>
+<button onclick="goStart()">Run Again</button>
 </div>
 
 </div>
@@ -133,30 +132,27 @@ function next(){
 step++;
 
 if(step===1) show("s1");
+if(step===2) show("s2");
+if(step===4) show("s4");
 
-if(step===2){
-let v=document.getElementById("loop").value;
-document.getElementById("pattern").innerText="You are repeating: "+v;
-show("s2");
-}
-
-if(step===3) show("s3");
-
-if(step===5) show("s5");
-
-if(step===7){
+if(step===6){
 let loop=document.getElementById("loop").value;
 let action=document.getElementById("action").value;
 
 let protocol = `
-When: ${loop}
-Failure: ${labelText}
-Rule: ${ruleText}
-Action: ${action}
+WHEN: ${loop}
+FAILURE: ${labelText}
+RULE: ${ruleText}
+ACTION: ${action}
+DATE: ${new Date().toLocaleDateString()}
 `;
 
-document.getElementById("protocolBox").innerText = protocol;
+document.getElementById("protocol").innerText = protocol;
+show("s6");
+}
 
+if(step===7){
+loadHistory();
 show("s7");
 }
 }
@@ -166,11 +162,11 @@ type=t;
 
 if(t==="clarity"){
 labelText="Clarity failure";
-ruleText="Define one action. Ignore everything else.";
+ruleText="Define one action.";
 }
 if(t==="execution"){
 labelText="Execution failure";
-ruleText="Start before you feel ready.";
+ruleText="Start immediately.";
 }
 if(t==="load"){
 labelText="Load failure";
@@ -180,28 +176,45 @@ ruleText="Reduce to one thing.";
 document.getElementById("label").innerText=labelText;
 document.getElementById("rule").innerText=ruleText;
 
-step=4;
-show("s4");
+step=3;
+show("s3");
 }
 
 function path(p){
-actionType=p;
-
 let prompt="";
 if(p==="start") prompt="What is the smallest start?";
 if(p==="remove") prompt="What are you removing?";
 if(p==="clarify") prompt="What needs clarity?";
 
-document.getElementById("actionPrompt").innerText=prompt;
+document.getElementById("prompt").innerText=prompt;
 
-step=6;
-show("s6");
+step=5;
+show("s5");
 }
 
-function copyProtocol(){
-let text=document.getElementById("protocolBox").innerText;
-navigator.clipboard.writeText(text);
-alert("Copied");
+function saveProtocol(){
+let existing = JSON.parse(localStorage.getItem("protocols") || "[]");
+let current = document.getElementById("protocol").innerText;
+existing.push(current);
+localStorage.setItem("protocols", JSON.stringify(existing));
+}
+
+function loadHistory(){
+let existing = JSON.parse(localStorage.getItem("protocols") || "[]");
+let container = document.getElementById("history");
+container.innerHTML = "";
+
+existing.slice().reverse().forEach(p=>{
+let div=document.createElement("div");
+div.className="box";
+div.innerText=p;
+container.appendChild(div);
+});
+}
+
+function goStart(){
+step=0;
+show("s0");
 }
 </script>
 
