@@ -23,8 +23,10 @@ body {
   text-align: center;
 }
 .active { display: block; }
+
 h1 { font-size: 22px; margin-bottom: 10px; }
 p { opacity: 0.7; font-size: 14px; }
+
 button {
   width: 100%;
   padding: 16px;
@@ -34,10 +36,13 @@ button {
   color: #EAEAEA;
   border-radius: 6px;
   cursor: pointer;
+  transition: all 0.15s ease;
 }
 button:hover {
   background: #151515;
+  transform: scale(1.02);
 }
+
 input {
   width: 100%;
   padding: 14px;
@@ -80,8 +85,8 @@ input {
 <div class="screen" id="s3">
   <h1>Choose</h1>
   <p>You can stay in this, or break it.</p>
-  <button onclick="choose('stay')">Stay in it</button>
-  <button onclick="choose('break')">Break it</button>
+  <button onclick="choose()">Break it</button>
+  <button onclick="choose()">Stay in it</button>
 </div>
 
 <!-- STEP 4 -->
@@ -94,16 +99,41 @@ input {
 
 <!-- STEP 5 -->
 <div class="screen" id="s5">
-  <h1>Say it clearly</h1>
-  <p>You are now doing:</p>
+  <h1>You are now doing:</h1>
   <h1 id="finalAction"></h1>
+  <button onclick="next()">Lock it in</button>
+</div>
+
+<!-- TRANSITION -->
+<div class="screen" id="transition">
+  <h1>Loop broken.</h1>
+  <p>Now we make sure it doesn’t come back.</p>
+  <button onclick="next()">Continue</button>
+</div>
+
+<!-- INSTRUMENT 1 -->
+<div class="screen" id="i1">
+  <h1>Pattern Lock</h1>
+  <p>When does this usually happen?</p>
+  <input id="whenInput" placeholder="Time / situation">
+  <p>What triggers it?</p>
+  <input id="triggerInput" placeholder="Trigger">
+  <button onclick="next()">Continue</button>
+</div>
+
+<!-- INSTRUMENT 2 -->
+<div class="screen" id="i2">
+  <h1>Pre-Commit</h1>
+  <p>Next time this happens, you will:</p>
+  <input id="futureAction" placeholder="Immediate action only">
   <button onclick="next()">Lock it in</button>
 </div>
 
 <!-- FINAL -->
 <div class="screen" id="final">
-  <h1>Loop broken.</h1>
-  <p>You now have control. Act immediately.</p>
+  <h1 id="finalCommit"></h1>
+  <p>You didn’t just break the loop.  
+  You now control what happens next.</p>
 </div>
 
 </div>
@@ -120,23 +150,39 @@ function next(){
   step++;
 
   if(step === 1) show("s1");
+
   if(step === 2){
     const loop = document.getElementById("loopInput").value;
     document.getElementById("patternText").innerText =
-      "You are stuck repeating: " + (loop || "this pattern");
+      "You are repeating: " + (loop || "this pattern");
     show("s2");
   }
+
   if(step === 3) show("s3");
+
   if(step === 4) show("s4");
+
   if(step === 5){
     const action = document.getElementById("actionInput").value;
     document.getElementById("finalAction").innerText = action || "Take action now";
     show("s5");
   }
-  if(step === 6) show("final");
+
+  if(step === 6) show("transition");
+
+  if(step === 7) show("i1");
+
+  if(step === 8) show("i2");
+
+  if(step === 9){
+    const future = document.getElementById("futureAction").value;
+    document.getElementById("finalCommit").innerText =
+      "Next time: " + (future || "Act immediately");
+    show("final");
+  }
 }
 
-function choose(type){
+function choose(){
   next();
 }
 </script>
